@@ -81,10 +81,9 @@ const QuillEditor = () => {
         theme: "snow",
         modules: {
           toolbar: permissionOfuser === "VIEW" ? false : toolbarOptions,
-          cursors: true,
-          // cursors: {
-          // transformOnTextChange: true
-        // }
+          cursors: {
+            transformOnTextChange: true
+          }
         }})
         console.log("PERMISSION:",permissionOfuser)
     }
