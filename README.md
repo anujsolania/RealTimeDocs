@@ -11,7 +11,7 @@ JWT Token Authentication: Stay secure with token-based authentication.
 Prisma ORM: Manage the database easily with Prisma to communicate with postgreSQL.
 Socket.IO Integration: Experience real-time updates and collaboration with Socket.IO.
 Getting Started
-Clone the repository: git clone https://github.com/anujsolania/Docify
+Clone the repository: git clone https://github.com/anujsolania/RealTimeDocs
 Navigate to the project directory: cd Docify
 Install dependencies:
 For the frontend: cd client && npm install
