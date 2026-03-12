@@ -1,9 +1,13 @@
 import express from "express";
 import userRouter from "./user.router";
 import docRouter from "./document.router";
-const router = express.Router()
+const router = express.Router();
 
-router.use("/user", userRouter)
-router.use("/document", docRouter)
+router.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
-export default router
+router.use("/user", userRouter);
+router.use("/document", docRouter);
+
+export default router;
