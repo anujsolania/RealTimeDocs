@@ -14,7 +14,7 @@ function App() {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
+    const check = () => setIsMobile(window.innerWidth < 480);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
