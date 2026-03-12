@@ -198,7 +198,8 @@ export const sharedocument = async (req: CustomRequest, res: Response) => {
         email: email,
       },
     });
-    if (!user) return res.status(400).json({ error: "user not found" });
+    if (!user)
+      return res.status(400).json({ error: "User with this email not found" });
 
     const sharedocument = await prisma.documentuser.findFirst({
       where: {
@@ -220,11 +221,12 @@ export const sharedocument = async (req: CustomRequest, res: Response) => {
           permission: permission,
         },
       });
-      await SendMail({
-        from: `RealTimeDocs <${process.env.EMAIL}>` as string,
-        to: email as string,
-        subject: `${document?.user.name} updated your access to "${document?.title}"`,
-        html: `
+      try {
+        await SendMail({
+          from: `RealTimeDocs <${process.env.EMAIL}>` as string,
+          to: email as string,
+          subject: `${document?.user.name} updated your access to "${document?.title}"`,
+          html: `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                         <h2 style="color: #333;">Access Updated 🔄</h2>
                         <p style="color: #666; font-size: 16px;">
@@ -250,8 +252,14 @@ export const sharedocument = async (req: CustomRequest, res: Response) => {
                         </p>
                     </div>
                 `,
-        text: `Hi ${user.name}, ${document?.user.name} updated your access to "${document?.title}" with ${permission} permission. You can access the document here: ${process.env.LINK}/document/${documentId}`,
-      });
+          text: `Hi ${user.name}, ${document?.user.name} updated your access to "${document?.title}" with ${permission} permission. You can access the document here: ${process.env.LINK}/document/${documentId}`,
+        });
+      } catch (mailError) {
+        console.error("Failed to send access-updated email:", mailError);
+      }
+      return res
+        .status(200)
+        .json({ message: "Document access updated successfully" });
     } else {
       await prisma.documentuser.create({
         data: {
@@ -260,12 +268,12 @@ export const sharedocument = async (req: CustomRequest, res: Response) => {
           permission: permission,
         },
       });
-    }
-    await SendMail({
-      from: `RealTimeDocs <${process.env.EMAIL}>` as string,
-      to: email as string,
-      subject: `${document?.user.name} shared "${document?.title}" with you`,
-      html: `
+      try {
+        await SendMail({
+          from: `RealTimeDocs <${process.env.EMAIL}>` as string,
+          to: email as string,
+          subject: `${document?.user.name} shared "${document?.title}" with you`,
+          html: `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                         <h2 style="color: #333;">Document Shared With You 📄</h2>
                         <p style="color: #666; font-size: 16px;">
@@ -297,8 +305,12 @@ export const sharedocument = async (req: CustomRequest, res: Response) => {
                         </p>
                     </div>
                 `,
-      text: `Hi ${user.name}, ${document?.user.name} shared a document "${document?.title}" with you with ${permission} access. You can access the document here: ${process.env.LINK}/document/${documentId}`,
-    });
+          text: `Hi ${user.name}, ${document?.user.name} shared a document "${document?.title}" with you with ${permission} access. You can access the document here: ${process.env.LINK}/document/${documentId}`,
+        });
+      } catch (mailError) {
+        console.error("Failed to send share notification email:", mailError);
+      }
+    }
     return res.status(200).json({ message: "Document shared successfully" });
   } catch (error) {
     console.error(error);
