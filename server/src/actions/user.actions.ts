@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
-import { SendMail } from "../sendgrid-config";
+import { SendMail } from "../nodemailer-config";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { CustomRequest } from "../interfaces/interfacess";
 
@@ -77,13 +77,11 @@ export const signin = async (req: CustomRequest, res: Response) => {
       },
     });
 
-    return res
-      .status(200)
-      .json({
-        message: `Logged In successfully as ${req.userEmail}`,
-        token,
-        user,
-      });
+    return res.status(200).json({
+      message: `Logged In successfully as ${req.userEmail}`,
+      token,
+      user,
+    });
   } catch (error) {
     console.error(error);
     return res.json({ error: "Unable to login" });
@@ -106,12 +104,10 @@ export const verifyemail = async (req: Request, res: Response) => {
     });
 
     if (userr?.isVerified)
-      return res
-        .status(200)
-        .json({
-          verified: userr.isVerified,
-          message: "User is already verified",
-        });
+      return res.status(200).json({
+        verified: userr.isVerified,
+        message: "User is already verified",
+      });
 
     const user = await prisma.user.update({
       where: {
@@ -187,12 +183,10 @@ export const forgotpassworddd = async (req: Request, res: Response) => {
       process.env.RESETPASSWORD_KEY as string
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "resetPasswordToken verified successfully",
-        email: (decoded as JwtPayload).email,
-      });
+    return res.status(200).json({
+      message: "resetPasswordToken verified successfully",
+      email: (decoded as JwtPayload).email,
+    });
   } catch (error) {
     return res.status(400).json({ error: (error as Error).message });
   }

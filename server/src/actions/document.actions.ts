@@ -1,8 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { CustomRequest } from "../interfaces/interfacess";
-import { error } from "console";
-import { SendMail } from "../sendgrid-config";
+import { SendMail } from "../nodemailer-config";
 
 const prisma = new PrismaClient();
 
