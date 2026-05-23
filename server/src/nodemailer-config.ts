@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
     rateDelta: 5000,
     rateLimit: 5,
   },
-});
+} as any);
 
 export interface MailData {
   from: string;
